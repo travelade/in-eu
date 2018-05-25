@@ -1,4 +1,4 @@
-var jstz = require('jstz')
+const jstz = require('jstz')
 
 /*
   Loosely checks if someone's in Europe based on their timezone or locale.
@@ -9,10 +9,10 @@ var jstz = require('jstz')
 */
 module.exports = function isInEU() {
   return isInEUTimezone() || isEULocale()
-}
+};
 
-module.exports.isInEUTimezone = isInEUTimezone
-module.exports.isEULocale = isEULocale
+module.exports.isInEUTimezone = isInEUTimezone;
+module.exports.isEULocale = isEULocale;
 
 /*
   Loosely checks that a given locale partially matches an EU country code.
@@ -22,22 +22,22 @@ module.exports.isEULocale = isEULocale
   http://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Country_codes
 */
 function isEULocale() {
-  var locale = browserLocale()
-  var code = locale
+  const locale = browserLocale();
+  let code = locale;
 
-  if (locale.includes('-')) {
-    code = locale.split('-')[1]
+  if (locale && locale.includes('-')) {
+    code = locale.split('-')[1];
   }
 
-  return !!countryCodes[code.toUpperCase()]
+  return !!countryCodes[code && code.toUpperCase()];
 }
 
 function isInEUTimezone() {
-  var tz = browserTimezone()
-  return tz && tz.indexOf('Europe') >= 0
+  const tz = browserTimezone();
+  return tz && tz.indexOf('Europe') >= 0;
 }
 
-var countryCodes = {
+const countryCodes = {
   BE: 'Belgium',
   EL: 'Greece',
   LT: 'Lithuania',
@@ -69,6 +69,7 @@ var countryCodes = {
   SK: 'Slovakia',
   DE: 'Germany',
   IT: 'Italy',
+  IS: 'Iceland',
   NL: 'Netherlands',
   AW: 'Aruba',
   CW: 'Curacao',
@@ -98,23 +99,23 @@ var countryCodes = {
   GG: 'Guernsey',
   JE: 'Jersey',
   IM: 'Isle of Man'
-}
+};
 
 function browserTimezone() {
-  var timezone = jstz.determine()
-  return timezone.name()
+  const timezone = jstz.determine();
+  return timezone.name();
 }
 
 function browserLocale() {
-  if (window.navigator.languages && window.navigator.languages.length > 0) {
+  if (window && window.navigator && window.navigator.languages && window.navigator.languages.length > 0) {
     // Latest versions of Chrome and Firefox set this correctly
-    return navigator.languages[0]
+    return window.navigator.languages[0];
   }
 
   if (navigator.userLanguage) {
     // IE only
-    return navigator.userLanguage
+    return navigator.userLanguage;
   }
 
-  return navigator.language
+  return navigator.language;
 }
